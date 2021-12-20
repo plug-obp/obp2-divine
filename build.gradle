@@ -1,0 +1,29 @@
+version='1.0.0'
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+repositories {
+    mavenCentral()
+    maven { url "${OBP2ReadOnlyMavenRepository}" }
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+publishing {
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url = "${OBP2PublishMavenRepository}"
+        }
+    }
+    publications {
+        jar(MavenPublication) {
+            groupId = 'fr.ensta-bretagne'
+            from components.java
+        }
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.7'
+}
