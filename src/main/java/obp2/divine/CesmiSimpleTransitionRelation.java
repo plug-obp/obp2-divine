@@ -16,22 +16,18 @@ public class CesmiSimpleTransitionRelation implements ISimpleTransitionRelationI
     }
 
     @Override
-    public Iterator<byte[]> initialConfigurations() {
+    public Iterator<byte[]> initialIterator() {
         return new TheIterator(null);
     }
 
     @Override
-    public Iterator<byte[]> next(byte[] source) {
+    public Iterator<byte[]> nextIterator(byte[] source) {
         return new TheIterator(source);
     }
 
     @Override
     public boolean isAccepting(byte[] configuration) {
         return binding.isAccepting(configuration);
-    }
-
-    Iterable<byte[]> iterable(Iterator<byte[]> iterator) {
-        return () -> iterator;
     }
 
     class TheIterator implements Iterator<byte[]> {

@@ -1,7 +1,10 @@
 package obp2.divine;
 
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class CesmiReachability {
 
@@ -14,17 +17,17 @@ public class CesmiReachability {
         Iterator<byte[]> neighbours;
         while (!frontier.isEmpty() || atStart) {
             if (atStart) {
-                neighbours = transitionRelation.initialConfigurations();;
+                neighbours = transitionRelation.initialIterator();;
                 atStart = false;
             } else {
                 byte[] source = new byte[configurationWidth];
                 frontier.remove().get(source);
-                neighbours = transitionRelation.next(source);
+                neighbours = transitionRelation.nextIterator(source);
             }
 
             for (byte[] neighbour: transitionRelation.iterable(neighbours)) {
                 ByteBuffer buffer;
-                if ((buffer = known.add(neighbour)) != null) {
+                if ((buffer = known.addAndGet(neighbour)) != null) {
                     frontier.add(buffer);
                 }
             }

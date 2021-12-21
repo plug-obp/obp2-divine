@@ -46,10 +46,12 @@ public class CesmiBindingJNI {
 
     public int configuration_width = 0;
     long handle = 0;
-    public CesmiBindingJNI(boolean has_ltl) {
+    public boolean omegaAcceptance;
+    public CesmiBindingJNI(boolean omegaAcceptance) {
+        this.omegaAcceptance = omegaAcceptance;
         configuration_width = configurationWidth();
         System.out.println("configuration width: " + configuration_width);
-        handle = createContext(has_ltl);
+        handle = createContext(omegaAcceptance);
     }
 
     @Override
