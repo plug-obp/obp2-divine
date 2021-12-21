@@ -32,12 +32,18 @@ public class CesmiPlugin implements ILanguagePlugin<URI, ByteArrayConfiguration,
         boolean hasLTL = true;
         CesmiTransitionRelation transitionRelation = new CesmiTransitionRelation(hasLTL);
 
-        return new CesmiLanguageModule(
-                hasLTL,
+        return new LanguageModule(
                 transitionRelation,
-                (ByteArrayConfiguration c) -> transitionRelation.binding().isAccepting(c.state),
+                (c) -> transitionRelation.binding().isAccepting(((ByteArrayConfiguration)c).state),
                 new CesmiMarshaller()
         );
+
+//        return new CesmiLanguageModule(
+//                hasLTL,
+//                transitionRelation,
+//                (c) -> transitionRelation.binding().isAccepting(c.state),
+//                new CesmiMarshaller()
+//        );
     }
 
     @Override

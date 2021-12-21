@@ -33,7 +33,7 @@ cesmi_next_stream.o: ${SRC_DIR}/cesmi_next_stream.c
 	gcc ${CC_FLAGS} -I"${INCLUDE_DIR}" -c ${SRC_DIR}/cesmi_next_stream.c -o "${BUILD_DIR}/objects/"cesmi_next_stream.o
 
 bakery.1.o: ${SRC_DIR}/bakery/bakery.1.dve.cpp 
-	gcc ${CC_FLAGS} -Wno-return-type -Wno-parentheses-equality -c ${SRC_DIR}/bakery/bakery.1.prop2.dve.cpp -o "${BUILD_DIR}"/objects/bakery.1.o
+	gcc ${CC_FLAGS} -Wno-return-type -Wno-parentheses-equality -c ${SRC_DIR}/bakery/bakery.1.prop3.dve.cpp -o "${BUILD_DIR}"/objects/bakery.1.o
 
 ${BUILD_DIR}:
 	mkdir -p ${BUILD_DIR} ${BUILD_DIR}/objects ${BUILD_DIR}/bin

@@ -79,7 +79,7 @@ public class CesmiBindingJNI {
 
 
     public static void main(String[] args) {
-        CesmiBindingJNI o = new CesmiBindingJNI(false);
+        CesmiBindingJNI o = new CesmiBindingJNI(true);
         byte[] target = new byte[o.configuration_width];
         Arrays.fill(target, (byte) 1);
         boolean has_next = o.initial(target);
@@ -94,5 +94,12 @@ public class CesmiBindingJNI {
             System.out.println("has_next: " + has_next + " target: " + Arrays.toString(target));
             System.out.println("isAccepting: " + o.isAccepting(target));
         }
+        System.out.println("--------------------------");
+        byte[] source = new byte[] {1,1,0,0,0,0,0,0,0};
+        has_next = false;
+        do {
+            has_next = o.next(source, target);
+            System.out.println("source:" + Arrays.toString(source) + " ---- target: " + Arrays.toString(target) + "\t\tis_accepting: " + o.isAccepting(target) + " has_next: " + has_next);
+        } while (has_next);
     }
 }

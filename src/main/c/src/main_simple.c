@@ -36,5 +36,19 @@ int main(int argc, char const *argv[])
 
     free_context(context);
 
+    printf("-----------------\n");
+    context = create_context(1);
+    the_source = calloc(state_size, sizeof (char ));
+    ((char*)the_source)[0] = 1;
+    ((char*)the_source)[1] = 1;
+
+    do {
+        gve_next_target(context, the_source, the_source_width, &the_target, &the_target_width, &the_has_next);
+        buffer_print(the_target, the_target_width);
+    } while (the_has_next);
+
+
+    free_context(context);
+
     return 0;
 }

@@ -53,8 +53,14 @@ JNIEXPORT jboolean JNICALL Java_obp2_divine_CesmiBindingJNI_next (
     char *the_target = (*env)->GetPrimitiveArrayCritical(env, target, 0);
     ((instance_dump_t *)context->setup.instance)->m_target = the_target;
 
+//    buffer_print(the_source, target_width);
+
     char has_next = 0;
-    gve_next_target(context, the_source, source_width, NULL, &target_width, &has_next);
+    char *tgt = NULL;
+    gve_next_target(context, the_source, source_width, &tgt, &target_width, &has_next);
+
+//    printf("\t\t");
+//    buffer_print(the_target, target_width);
 
     (*env)->ReleasePrimitiveArrayCritical(env, target, the_target, 0);
     (*env)->ReleasePrimitiveArrayCritical(env, source, the_source, 0);
