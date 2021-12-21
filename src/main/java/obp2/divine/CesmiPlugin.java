@@ -31,7 +31,11 @@ public class CesmiPlugin implements ILanguagePlugin<URI, ByteArrayConfiguration,
     public ILanguageModule<ByteArrayConfiguration, ByteArrayConfiguration, Void> getModule(File programFile) {
         CesmiTransitionRelation transitionRelation = new CesmiTransitionRelation(true);
 
-        return new LanguageModule<>(transitionRelation, (c) -> transitionRelation.binding().isAccepting(c.state));
+        return new CesmiLanguageModule(
+                false,
+                transitionRelation,
+                (ByteArrayConfiguration c) -> transitionRelation.binding().isAccepting(c.state)
+        );
     }
 
     @Override
