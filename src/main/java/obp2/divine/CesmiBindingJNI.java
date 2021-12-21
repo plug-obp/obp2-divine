@@ -50,7 +50,6 @@ public class CesmiBindingJNI {
     public CesmiBindingJNI(boolean omegaAcceptance) {
         this.omegaAcceptance = omegaAcceptance;
         configuration_width = configurationWidth();
-        System.out.println("configuration width: " + configuration_width);
         handle = createContext(omegaAcceptance);
     }
 

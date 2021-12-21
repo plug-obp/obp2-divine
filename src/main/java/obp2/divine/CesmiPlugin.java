@@ -29,12 +29,14 @@ public class CesmiPlugin implements ILanguagePlugin<URI, ByteArrayConfiguration,
     }
 
     public ILanguageModule<ByteArrayConfiguration, ByteArrayConfiguration, Void> getModule(File programFile) {
-        CesmiTransitionRelation transitionRelation = new CesmiTransitionRelation(true);
+        boolean hasLTL = true;
+        CesmiTransitionRelation transitionRelation = new CesmiTransitionRelation(hasLTL);
 
         return new CesmiLanguageModule(
-                false,
+                hasLTL,
                 transitionRelation,
-                (ByteArrayConfiguration c) -> transitionRelation.binding().isAccepting(c.state)
+                (ByteArrayConfiguration c) -> transitionRelation.binding().isAccepting(c.state),
+                new CesmiMarshaller()
         );
     }
 

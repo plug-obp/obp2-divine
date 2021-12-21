@@ -10,8 +10,13 @@ public class CesmiLanguageModule extends LanguageModule<ByteArrayConfiguration, 
     boolean hasLTL;
 
 
-    public CesmiLanguageModule(boolean hasLTL, CesmiTransitionRelation transitionRelation, Predicate<ByteArrayConfiguration> isAcceptingPredicate) {
-        super(transitionRelation, isAcceptingPredicate);
+    public CesmiLanguageModule(
+            boolean hasLTL,
+            CesmiTransitionRelation transitionRelation,
+            Predicate<ByteArrayConfiguration> isAcceptingPredicate,
+            CesmiMarshaller marshaller)
+    {
+        super(transitionRelation, isAcceptingPredicate, marshaller);
         this.hasLTL = hasLTL;
     }
 
