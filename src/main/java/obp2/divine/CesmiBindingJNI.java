@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
 
 public class CesmiBindingJNI {
 
@@ -44,12 +44,12 @@ public class CesmiBindingJNI {
     private native boolean    next(long handle, byte[] source, int source_width, byte[] target, int target_width);
     private native boolean isAccepting(long handle, byte[] source, int source_width);
 
-    int configuration_width = 0;
+    public int configuration_width = 0;
     long handle = 0;
-    public CesmiBindingJNI() {
+    public CesmiBindingJNI(boolean has_ltl) {
         configuration_width = configurationWidth();
         System.out.println("configuration width: " + configuration_width);
-        handle = createContext(false);
+        handle = createContext(has_ltl);
     }
 
     @Override
@@ -65,62 +65,33 @@ public class CesmiBindingJNI {
     }
 
     public boolean next(byte[] source, byte[] target) {
-        return next(handle, source, configuration_width, target, configuration_width);
+        return  next(handle, source, configuration_width, target, configuration_width);
+    }
+
+    public boolean next(byte[] source, byte[] target, int target_width) {
+        return  next(handle, source, configuration_width, target, target_width);
     }
 
     public boolean isAccepting(byte[] source) {
         return isAccepting(handle, source, configuration_width);
     }
 
-    void reachability() {
-        CompactLinearScanSet known = new CompactLinearScanSet(5000, configuration_width, Arrays::hashCode);
-        Queue<byte[]> frontier = new LinkedList<>();
-        boolean atStart = true;
-
-        List<byte[]> neighbours = new ArrayList<>();
-        while (!frontier.isEmpty() || atStart) {
-            neighbours.clear();
-            if (atStart) {
-                byte[] target = new byte[configuration_width];
-                initial(target);
-                neighbours.add(target);
-                atStart = false;
-            } else {
-                byte[] source = frontier.remove();
-                boolean hasNext = false;
-                do {
-                    byte[] target = new byte[configuration_width];
-                    hasNext = next(source, target);
-                    neighbours.add(target);
-                } while(hasNext);
-            }
-
-            for (byte[] neighbour: neighbours) {
-                if (known.add(neighbour) != null) {
-                    frontier.add(neighbour);
-                }
-            }
-        }
-        System.out.println( "state-space size: " + known.m_size);
-    }
 
     public static void main(String[] args) {
-        CesmiBindingJNI o = new CesmiBindingJNI();
-//        byte[] target = new byte[o.configuration_width];
-//        Arrays.fill(target, (byte) 1);
-//        boolean has_next = o.initial(target);
-//
-//        System.out.println("has_next: " + has_next + " target: " + Arrays.toString(target));
-//        System.out.println("isAccepting: " + o.isAccepting(target));
-//
-//        for (int i=0; i<10; i++) {
-//            byte[] source = target.clone();
-//            has_next = o.next(source, target);
-//
-//            System.out.println("has_next: " + has_next + " target: " + Arrays.toString(target));
-//            System.out.println("isAccepting: " + o.isAccepting(target));
-//        }
+        CesmiBindingJNI o = new CesmiBindingJNI(false);
+        byte[] target = new byte[o.configuration_width];
+        Arrays.fill(target, (byte) 1);
+        boolean has_next = o.initial(target);
 
-        o.reachability();
+        System.out.println("has_next: " + has_next + " target: " + Arrays.toString(target));
+        System.out.println("isAccepting: " + o.isAccepting(target));
+
+        for (int i=0; i<10; i++) {
+            byte[] source = target.clone();
+            has_next = o.next(source, target);
+
+            System.out.println("has_next: " + has_next + " target: " + Arrays.toString(target));
+            System.out.println("isAccepting: " + o.isAccepting(target));
+        }
     }
 }
