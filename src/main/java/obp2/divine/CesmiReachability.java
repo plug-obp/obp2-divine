@@ -5,11 +5,12 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import obp2.cesmi.CesmiSimpleTransitionRelation;
 
 public class CesmiReachability {
 
     void reachability(CesmiSimpleTransitionRelation transitionRelation) {
-        int configurationWidth = transitionRelation.getBinding().configuration_width;
+        int configurationWidth = transitionRelation.getInstance().configurationWidth();
         CompactLinearScanSet known = new CompactLinearScanSet(5000, configurationWidth, Arrays::hashCode);
         Queue<ByteBuffer> frontier = new LinkedList<>();
         boolean atStart = true;
@@ -38,6 +39,6 @@ public class CesmiReachability {
     public static void main(String[] args) {
         CesmiReachability o = new CesmiReachability();
 
-        o.reachability(new CesmiSimpleTransitionRelation(false));
+        o.reachability(new CesmiSimpleTransitionRelation(args[0], false));
     }
 }

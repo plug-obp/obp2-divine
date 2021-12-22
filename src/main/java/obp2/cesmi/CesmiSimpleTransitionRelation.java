@@ -1,18 +1,24 @@
-package obp2.divine;
+package obp2.cesmi;
 
 import obp2.runtime.core.ISimpleTransitionRelationIterator;
 
 import java.util.Iterator;
 
 public class CesmiSimpleTransitionRelation implements ISimpleTransitionRelationIterator<byte[]> {
-    CesmiBindingJNI binding;
+    public final String cesmiPath;
+    public final boolean asBuchi;
+    final CesmiInstance instance;
 
-    public CesmiSimpleTransitionRelation(boolean hasLTL) {
-        binding = new CesmiBindingJNI(hasLTL);
+    public CesmiSimpleTransitionRelation(
+            String cesmiPath,
+            boolean asBuchi) {
+        this.cesmiPath = cesmiPath;
+        this.asBuchi = asBuchi;
+        instance = new CesmiInstance(cesmiPath, asBuchi);
     }
 
-    public CesmiBindingJNI getBinding() {
-        return binding;
+    public CesmiInstance getInstance() {
+        return instance;
     }
 
     @Override
@@ -27,15 +33,16 @@ public class CesmiSimpleTransitionRelation implements ISimpleTransitionRelationI
 
     @Override
     public boolean isAccepting(byte[] configuration) {
-        return binding.isAccepting(configuration);
+
+        long flags = instance.flags(configuration);
+        boolean isAccepting = ((flags>>1) & 1) != 0;
+        return isAccepting;
     }
 
     class TheIterator implements Iterator<byte[]> {
-        byte[] source = null;
-        byte[] target = new byte[binding.configuration_width];
-        boolean nextHasNext = false;
-        boolean currentHasNext = true;
-
+        byte[] source;
+        byte[] target;
+        int next = 1;
         boolean consumed = true;
 
         public TheIterator(byte[] source) {
@@ -44,21 +51,21 @@ public class CesmiSimpleTransitionRelation implements ISimpleTransitionRelationI
 
         @Override
         public boolean hasNext() {
-            if (consumed && currentHasNext) {
-                int targetWidth = target.length;
-                nextHasNext = source == null ? binding.initial(target) : binding.next(source, target, targetWidth);
-                if (targetWidth == 0) {
-                    //if targetWidth is set to zero then we have a deadlock, so hasNext is false
+            if (next == 0) return false;
+            if (consumed) {
+                target = new byte[instance.configurationWidth()];
+                next = source == null ? instance.initial(next, target) : instance.successor(next, source, target);
+                if (next == 0) {
+                    target = null;
                     return false;
                 }
                 consumed = false;
             }
-            return currentHasNext;
+            return true;
         }
 
         @Override
         public byte[] next() {
-            currentHasNext = nextHasNext;
             consumed = true;
             return target;
         }
