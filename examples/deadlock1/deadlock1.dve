@@ -1,0 +1,8 @@
+process P_0 {
+    state s0, s1;
+    init s0;
+    trans
+        s0 -> s1 {};
+}
+
+system async;
