@@ -1,5 +1,7 @@
 package obp2.divine;
 
+import obp2.cesmi.CesmiInstance;
+import obp2.cesmi.CesmiSimpleTransitionRelation;
 import obp2.core.ByteArrayConfiguration;
 import obp2.core.IFiredTransition;
 import obp2.core.defaults.FiredTransition;
@@ -15,17 +17,20 @@ public class CesmiTransitionRelation extends DefaultLanguageService<ByteArrayCon
 
     CesmiSimpleTransitionRelation simpleTransitionRelation;
 
-    public CesmiTransitionRelation(boolean omegaAcceptance) {
-        this.simpleTransitionRelation = new CesmiSimpleTransitionRelation(omegaAcceptance);
+    public CesmiTransitionRelation(CesmiSimpleTransitionRelation simpleTransitionRelation) {
+        this.simpleTransitionRelation = simpleTransitionRelation;
     }
 
-    CesmiBindingJNI binding() {
-        return simpleTransitionRelation.getBinding();
+    CesmiInstance binding() {
+        return simpleTransitionRelation.getInstance();
     }
 
     @Override
     public CesmiTransitionRelation createCopy() {
-        return new CesmiTransitionRelation(binding().omegaAcceptance);
+        return new CesmiTransitionRelation(
+                new CesmiSimpleTransitionRelation(
+                        simpleTransitionRelation.cesmiPath,
+                        simpleTransitionRelation.asBuchi));
     }
 
     @Override
@@ -34,7 +39,7 @@ public class CesmiTransitionRelation extends DefaultLanguageService<ByteArrayCon
 
         Iterator<byte[]> iterator = simpleTransitionRelation.initialIterator();
         while (iterator.hasNext()) {
-            configurations.add(new ByteArrayConfiguration(iterator.next().clone(), binding()::isAccepting));
+            configurations.add(new ByteArrayConfiguration(iterator.next(), simpleTransitionRelation::isAccepting));
         }
         return configurations;
     }
@@ -46,7 +51,7 @@ public class CesmiTransitionRelation extends DefaultLanguageService<ByteArrayCon
         Collection<ByteArrayConfiguration> targets = new ArrayList<>();
         Iterator<byte[]> iterator = simpleTransitionRelation.nextIterator(source.state);
         while (iterator.hasNext()) {
-            targets.add(new ByteArrayConfiguration(iterator.next().clone(), binding()::isAccepting));
+            targets.add(new ByteArrayConfiguration(iterator.next(), simpleTransitionRelation::isAccepting));
         }
         return targets;
     }

@@ -3,7 +3,6 @@ package obp2.divine;
 import obp2.core.ByteArrayConfiguration;
 import obp2.runtime.core.ILanguageModule;
 import obp2.runtime.core.ILanguagePlugin;
-import obp2.runtime.core.LanguageModule;
 
 import java.io.File;
 import java.net.URI;
@@ -29,21 +28,18 @@ public class CesmiPlugin implements ILanguagePlugin<URI, ByteArrayConfiguration,
     }
 
     public ILanguageModule<ByteArrayConfiguration, ByteArrayConfiguration, Void> getModule(File programFile) {
-        boolean hasLTL = true;
-        CesmiTransitionRelation transitionRelation = new CesmiTransitionRelation(hasLTL);
 
-        return new LanguageModule(
-                transitionRelation,
-                (c) -> transitionRelation.binding().isAccepting(((ByteArrayConfiguration)c).state),
-                new CesmiMarshaller()
-        );
+        boolean asBuchi = programFile.getName().contains(".prop");
 
-//        return new CesmiLanguageModule(
-//                hasLTL,
+//        return new LanguageModule(
 //                transitionRelation,
-//                (c) -> transitionRelation.binding().isAccepting(c.state),
+//                (c) -> transitionRelation.binding().isAccepting(((ByteArrayConfiguration)c).state),
 //                new CesmiMarshaller()
 //        );
+
+        return new CesmiLanguageModule(
+                programFile.getAbsolutePath(),
+                asBuchi);
     }
 
     @Override
